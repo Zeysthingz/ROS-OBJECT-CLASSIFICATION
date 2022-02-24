@@ -8,6 +8,8 @@
 * Here is results :
 
 #### RESNET-50
+![Model Accuracy and Loss Graphic](./resnet.jpg "RESNET")
+
 Classification Report
 
                    precision    recall  f1-score   support
