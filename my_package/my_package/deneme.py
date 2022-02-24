@@ -4,9 +4,10 @@ import numpy as np
 from .ros_model import Classifier
 from std_msgs.msg import String
 from darknet_ros_msgs.msg import BoundingBoxes
+from vision_msgs.msg import Classification2D
 from sensor_msgs.msg import Image
 import message_filters
-from vision_msgs.msg import Classification2D
+
 
 
 class MinimalSubscriber(Node):
@@ -25,7 +26,7 @@ class MinimalSubscriber(Node):
         for bbox in bboxes:
             if ("traffic light" == bbox.class_id):
                 x1, y1, x2, y2 = bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax
-                cropped = img[y1:y2, x1:x2, :].copy()
+                cropped = img[y1:y2, x1:x2, :]
                 name, score = self.model.prediction(cropped)
 
 

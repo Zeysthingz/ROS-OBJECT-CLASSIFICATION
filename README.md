@@ -1,16 +1,12 @@
 
-### OBJECT CLASSIFICATION BY ROS2
+## OBJECT CLASSIFICATION BY ROS2
 
-First step of this project dataset downloaded and divided three part as train test validation images.
-%70 of the dataset is train data , %20 of dataset is validation data and %10 of dataset is test data.
+First step of this project was dataset downloading second step was dividing three part as train, test and  validation dataset images.
+%70 of the dataset was train data , %20 of dataset was validation data and %10 of dataset was test data.
 Pretrained Resnet-50 and VGG-16 models were trained for comparison purposes.
-VGG-16 gave better results than Resnet-50 
 Here is results :
 
-* #### RESNET-50
-Resnet-50 Accuracy and Loss Graphic
-
-
+### RESNET-50
 
 
 * Precision - Precision is the ratio of correctly predicted positive observations to the total predicted positive observations.
@@ -31,13 +27,12 @@ Classification Report
     macro avg      0.90      0.85         0.86       576
     weighted avg   0.89      0.88         0.87       576
 
+RESNET-50 Accuracy and Loss Graphic
+
 ![Model Accuracy and Loss Graphic](./resnet.jpg "RESNET")
 
 
-* ### VGG -16
- VGG-16 Accuracy and Loss Graphic
-
-
+### VGG -16
 Classification Report 
 
                 precision    recall  f1-score   support
@@ -48,12 +43,42 @@ Classification Report
     accuracy                          0.97       576
     macro avg     0.94      0.82      0.98       576
     weighted avg  0.90      0.90      0.98       576
+
+
+ VGG-16 Accuracy and Loss Graphic
+
 ![Model Accuracy and Loss Graphic](./vgg16.png "vgg-16")
 
-![Model Accuracy and Loss Graphic](./result.jpg "Vgg16")
+![res](./3.jpeg "Vgg16")
 
 VGG-16 gave better result so it's picked to contunie of project.
 
 ### ROS2 STEPS
+After ros2bag file these step below done. 
+*       mkdir foxy_ws && cd foxy_ws #create workspace
+*       mkdir src && cd src  #create source 
+*       git clone ....  #clone darknet_ros repo
+*      source /opt/ros/foxy/setup.bash  #Set up your environment by sourcing the following file.
+*      rosdep install -i --from-path src --rosdistro foxy -y  #Install dependencies from src 
+*      source install/setup.bash  #This script extends the environment with the environment of other prefix paths which were sourced when this file was generated as well as all packages contained in this prefix path.
+*      colcon build #makes file as ros file
+*      ros2 bag play ros_bag_file_name.bag #plays video in rosbag file
+
+##### New Terminal
+*      source /opt/ros/foxy/setup.bash
+*      source install/setup.bash
+*      ros2 launch darknet_ros yolov3.launch.py 
+
+##### New Terminal
+*     source /opt/ros/foxy/setup.bash  
+*     source install/setup.bash
+*     ros2 topic list  # to see published nodes inside packages
+  ![Topic List](./1.jpeg "Topics")
+*     ros2 topic echo /darknet_ros/bounding_boxes # to see message inside of the node
+    ![Topic Messages](./6.jpeg "Topics")
+
+### IMPORTANT !
+At this point I could not take images simultaneously even I used ApproximateTimeSynchronizer function.
+
 
 
