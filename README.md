@@ -10,9 +10,17 @@ Here is results :
 * #### RESNET-50
 Resnet-50 Accuracy and Loss Graphic
 
-![Model Accuracy and Loss Graphic](./resnet.jpg "RESNET")
+
+
+
+* Precision - Precision is the ratio of correctly predicted positive observations to the total predicted positive observations.
+
+* Recall (Sensitivity) - Recall is the ratio of correctly predicted positive observations to the all observations in actual class.
+
+* F1 score - F1 Score is the weighted average of Precision and Recall. 
 
 Classification Report
+
 
                    precision    recall  f1-score   support
 		
@@ -23,11 +31,12 @@ Classification Report
     macro avg      0.90      0.85         0.86       576
     weighted avg   0.89      0.88         0.87       576
 
+![Model Accuracy and Loss Graphic](./resnet.jpg "RESNET")
+
 
 * ### VGG -16
  VGG-16 Accuracy and Loss Graphic
 
-![Model Accuracy and Loss Graphic](./vgg16.png "vgg-16")
 
 Classification Report 
 
@@ -39,6 +48,12 @@ Classification Report
     accuracy                          0.97       576
     macro avg     0.94      0.82      0.98       576
     weighted avg  0.90      0.90      0.98       576
+![Model Accuracy and Loss Graphic](./vgg16.png "vgg-16")
 
-![VGG 16](./prediction_result.jpg "vgg-16")
+![Model Accuracy and Loss Graphic](./result.jpg "Vgg16")
+
+VGG-16 gave better result so it's picked to contunie of project.
+
+### ROS2 STEPS
+
 
