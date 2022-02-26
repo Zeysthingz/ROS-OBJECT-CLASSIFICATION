@@ -5,14 +5,13 @@ from vgg import vgg
 
 
 class Classifier:
-    def __init__(self, device):
-        self.device = device
+    def __init__(self):
+        self.device = "cuda"
         self.class_names = ["go", "stop"]
         self.transform = transforms.Compose([transforms.RandomResizedCrop(224), transforms.ToTensor()])
-
-        model = vgg(num_classes=2).to(device)
+        model = vgg(num_classes=2).to(self.device)
         weight = "/content/gdrive/MyDrive/LeoTask/vgg16/best_model.pth"
-        model.load_state_dict(torch.load(weight, map_location=device))
+        model.load_state_dict(torch.load(weight, map_location=self.device))
         model.eval()
         self.model = model
 
@@ -25,5 +24,5 @@ class Classifier:
         prediction = prediction.to("cpu")
         id = torch.max(prediction, dim=1)[1]
         name = self.class_names[int(id)]
-        score = prediction[0][int(id)]
-        return name, float(score)
+        score = float(prediction[0][int(id)])
+        return name, score

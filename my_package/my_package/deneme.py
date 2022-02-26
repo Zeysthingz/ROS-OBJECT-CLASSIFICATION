@@ -14,20 +14,20 @@ class MinimalSubscriber(Node):
 
     def __init__(self):
         super().__init__('minimal_subscriber')
-        self.model = Classifier("cuda")
+        self.ros_model = Classifier()
         bbox = message_filters.Subscriber(self, BoundingBoxes, '/darknet_ros/bounding_boxes')
         image = message_filters.Subscriber(self, Image, '/darknet_ros/detection_image')
-        synchronizer = message_filters.ApproximateTimeSynchronizer([image, bbox], 10, 1)
+        synchronizer = message_filters.ApproximateTimeSynchronizer([image, bbox], 5, 0.1)
         synchronizer.registerCallback(self.callback)
 
-    def callback(self, image_data, bbox_data):
-        img = np.frombuffer(image_data.data, dtype=np.uint8).reshape(image_data.height, image_data.width, -1)
-        bboxes = bbox_data.bounding_boxes
+    def callback(self, image, bbox):
+        images = np.asarray(image.data, dtype=np.uint8).reshape(image.height, image.width, -1)
+        bboxes = bbox.bounding_boxes
         for bbox in bboxes:
-            if ("traffic light" == bbox.class_id):
+            if "traffic light" == bbox.class_id:
                 x1, y1, x2, y2 = bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax
-                cropped = img[y1:y2, x1:x2, :]
-                name, score = self.model.prediction(cropped)
+                cropped_img = images[y1:y2, x1:x2, :]
+                name, score = self.ros_model.prediction(cropped_img)
 
 
 def main(args=None):
