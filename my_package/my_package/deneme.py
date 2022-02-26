@@ -17,7 +17,8 @@ class MinimalSubscriber(Node):
         self.ros_model = Classifier()
         bbox = message_filters.Subscriber(self, BoundingBoxes, '/darknet_ros/bounding_boxes')
         image = message_filters.Subscriber(self, Image, '/darknet_ros/detection_image')
-        synchronizer = message_filters.ApproximateTimeSynchronizer([image, bbox], 5, 0.1)
+        synchronizer = message_filters.TimeSynchronizer([bbox, image], 10)
+        # synchronizer = message_filters.ApproximateTimeSynchronizer([image, bbox], 5, 0.1)
         synchronizer.registerCallback(self.callback)
 
     def callback(self, image, bbox):
@@ -28,6 +29,8 @@ class MinimalSubscriber(Node):
                 x1, y1, x2, y2 = bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax
                 cropped_img = images[y1:y2, x1:x2, :]
                 name, score = self.ros_model.prediction(cropped_img)
+                print("traffic_light & score : {}  {}".format(name, score))
+
 
 
 def main(args=None):
