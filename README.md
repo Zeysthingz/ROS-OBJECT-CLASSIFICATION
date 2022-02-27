@@ -78,7 +78,8 @@ After ros2bag file these step below done.
     ![Topic Messages](./6.jpeg "Topics")
 
 ### IMPORTANT !
-At this point I could not take images simultaneously even I used ApproximateTimeSynchronizer function.
+The call back functions of the subscriber nodes I created were not working because they could not synchronize.After searching the internet. As a method, I learned that the metadata in the header, the time stamp, should be fixed.
+For this, I fixed the time of the raw images in the classifier node and gave them to the message service.Then I produced results by inserting images into the model prediction and on a new publisher node. I published the name of classes and the scores of them.
+Here is the result after solving simultaneous synchronization problem :
 
-
-
+![Result](./published.png "Topics")

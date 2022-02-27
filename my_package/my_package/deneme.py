@@ -1,36 +1,51 @@
 import rclpy
 from rclpy.node import Node
-import numpy as np
-from .ros_model import Classifier
-from std_msgs.msg import String
+from std_msgs.msg import Header
 from darknet_ros_msgs.msg import BoundingBoxes
-from vision_msgs.msg import Classification2D
 from sensor_msgs.msg import Image
 import message_filters
-
+from vision_msgs.msg import Classification2D
+from vision_msgs.msg import ObjectHypothesis
+import numpy as np
+from .ros_model import Classifier
 
 
 class MinimalSubscriber(Node):
 
     def __init__(self):
         super().__init__('minimal_subscriber')
-        self.ros_model = Classifier()
-        bbox = message_filters.Subscriber(self, BoundingBoxes, '/darknet_ros/bounding_boxes')
-        image = message_filters.Subscriber(self, Image, '/darknet_ros/detection_image')
-        synchronizer = message_filters.TimeSynchronizer([bbox, image], 10)
-        # synchronizer = message_filters.ApproximateTimeSynchronizer([image, bbox], 5, 0.1)
+        self.model = Classifier()
+        bbox_sub = message_filters.Subscriber(self, BoundingBoxes, '/darknet_ros/bounding_boxes')
+        self.corrected_image = self.create_subscription(Image, '/image_raw/camera0_sec/uncompressed',self.listener_callback, 10)
+        self.published_image = self.create_publisher(Image, '/edited_image_time', 10)
+        image_sub = message_filters.Subscriber(self, Image, '/edited_image_time')
+        synchronizer = message_filters.TimeSynchronizer([image_sub, bbox_sub],10)
         synchronizer.registerCallback(self.callback)
+        self.classfication_publisher = self.create_publisher(Classification2D, '/results', 10)
 
-    def callback(self, image, bbox):
-        images = np.asarray(image.data, dtype=np.uint8).reshape(image.height, image.width, -1)
-        bboxes = bbox.bounding_boxes
+    def listener_callback(self, image_data):
+        header = Header()
+        header.stamp = self.get_clock().now().to_msg()
+        image_data.header = header
+        self.published_image.publish(image_data)
+
+    def callback(self, image_data, bbox_data):
+        img = np.frombuffer(image_data.data, dtype=np.uint8).reshape(image_data.height, image_data.width, -1)
+        bboxes = bbox_data.bounding_boxes
+
         for bbox in bboxes:
-            if "traffic light" == bbox.class_id:
+            if ("traffic light" == bbox.class_id):
                 x1, y1, x2, y2 = bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax
-                cropped_img = images[y1:y2, x1:x2, :]
-                name, score = self.ros_model.prediction(cropped_img)
-                print("traffic_light & score : {}  {}".format(name, score))
-
+                cropped_img = img[y1:y2, x1:x2, :].copy()
+                name, score = self.model.prediction(cropped_img)
+                print("class_name & score : {}  {}".format(name, score))
+                published_message = Classification2D()
+                object_message = ObjectHypothesis()
+                object_message.id = name
+                object_message.score = score
+                published_message.results = [object_message]
+                published_message.source_img = image_data
+                self.classfication_publisher.publish(published_message)
 
 
 def main(args=None):
@@ -49,3 +64,4 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
