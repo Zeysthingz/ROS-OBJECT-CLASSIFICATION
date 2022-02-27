@@ -83,3 +83,26 @@ For this, I fixed the time of the raw images in the classifier node and gave the
 Here is the result after solving simultaneous synchronization problem :
 
 ![Result](./published.png "Topics")
+
+#### References
+To train models :
+
+* https://www.kaggle.com/suniliitb96/tutorial-keras-transfer-learning-with-resnet50/notebook
+* https://www.kaggle.com/kmkarakaya/transfer-learning-for-image-classification/notebook
+* https://github.com/pytorch/vision/tree/main/torchvision
+* https://github.com/WZMIAOMIAO/deep-learning-for-image-processing/
+
+To calculate presicion ,recall metrics :
+* https://blog.exsilio.com/all/accuracy-precision-recall-f1-score-interpretation-of-performance-measures
+* https://www.kaggle.com/surajyathinatti/transfer-learning-confusion-matrix-class-report/data
+
+To create publisher and subscriber nodes :
+* https://docs.ros.org/en/foxy/Tutorials/Writing-A-Simple-Py-Publisher-And-Subscriber.html
+* https://automaticaddison.com/create-a-basic-publisher-and-subscriber-python-ros2-foxy/
+
+To objects classification :
+* https://medium.com/@sutej.kulgod/neural-networks-tf-ros2-12844fa0d7a2
+
+To synchronization problem solving :
+* https://adioshun.gitbooks.io/ros_autoware/content/Tips/multi-msg-subscribe.html
+
