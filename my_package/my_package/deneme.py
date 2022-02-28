@@ -19,7 +19,7 @@ class MinimalSubscriber(Node):
         self.corrected_image = self.create_subscription(Image, '/image_raw/camera0_sec/uncompressed',self.listener_callback, 10)
         self.published_image = self.create_publisher(Image, '/edited_image_time', 10)
         image_sub = message_filters.Subscriber(self, Image, '/edited_image_time')
-        synchronizer = message_filters.TimeSynchronizer([image_sub, bbox_sub],10)
+        synchronizer = message_filters.ApproximateTimeSynchronizer([image_sub, bbox_sub],10)
         synchronizer.registerCallback(self.callback)
         self.classfication_publisher = self.create_publisher(Classification2D, '/results', 10)
 
