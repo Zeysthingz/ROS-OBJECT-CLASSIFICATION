@@ -73,7 +73,7 @@ After ros2bag file these step below done.
 *     source /opt/ros/foxy/setup.bash  
 *     source install/setup.bash
 *     ros2 topic list  # to see published nodes inside packages
-  ![Topic List](./1.jpeg "Topics")
+  ![Topic List](./topics.jpeg "Topics")
 *     ros2 topic echo /darknet_ros/bounding_boxes # to see message inside of the node
     ![Topic Messages](./6.jpeg "Topics")
 
