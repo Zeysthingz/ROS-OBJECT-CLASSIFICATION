@@ -24,7 +24,7 @@ class MinimalSubscriber(Node):
         # Maximum queue size of 10.
         synchronizer = message_filters.ApproximateTimeSynchronizer([image_sub, bbox_sub], queue=10, slop=0.5)
         synchronizer.registerCallback(self.callback)
-        self.classfication_publisher = self.create_publisher(Classification2D, '/results', 10)
+        self.published_image = self.create_publisher(Classification2D, '/results', 10)
 
     def listener_callback(self, image_data):
         header = Header()
@@ -33,6 +33,7 @@ class MinimalSubscriber(Node):
         self.published_image.publish(image_data)
 
     def callback(self, image_data, bbox_data):
+        # 3.boyutu senin için konfigure ediyor içinde
         image = np.asarray(image_data.data, dtype=np.uint8).reshape(image_data.height, image_data.width, -1)
         bboxes = bbox_data.bounding_boxes
 
@@ -43,15 +44,15 @@ class MinimalSubscriber(Node):
                 name, score = self.model.prediction(cropped_img)
                 print("class_name & score : {}  {}".format(name, score))
                 ## This result does not contain any position information. It is designed for
-                #classifiers, which simply provide class probabilities given a source image.
+                # classifiers, which simply provide class probabilities given a source image.
                 published_message = Classification2D()
-                #takes name and score information
+                # takes name and score information
                 object_message = ObjectHypothesis()
                 object_message.id = name
                 object_message.score = score
                 published_message.results = [object_message]
                 published_message.source_img = image_data
-                self.classfication_publisher.publish(published_message)
+                self.published_image.publish(published_message)
 
 
 def main(args=None):
