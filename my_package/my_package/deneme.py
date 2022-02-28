@@ -33,7 +33,7 @@ class MinimalSubscriber(Node):
         self.published_image.publish(image_data)
 
     def callback(self, image_data, bbox_data):
-        image = np.frombuffer(image_data.data, dtype=np.uint8).reshape(image_data.height, image_data.width, -1)
+        image = np.asarray(image_data.data, dtype=np.uint8).reshape(image_data.height, image_data.width, -1)
         bboxes = bbox_data.bounding_boxes
 
         for bbox in bboxes:
