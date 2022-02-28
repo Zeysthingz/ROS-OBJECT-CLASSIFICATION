@@ -30,7 +30,7 @@ class MinimalSubscriber(Node):
         header = Header()
         header.stamp = self.get_clock().now().to_msg()
         image_data.header = header
-        self.corrected_image.publish(image_data)
+        self.  self.published_image.publish(image_data)
 
     def callback(self, image_data, bbox_data):
         # 3.boyutu senin için konfigure ediyor içinde
