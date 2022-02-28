@@ -37,9 +37,9 @@ def main():
         pred = model(images.to(device))
         pred = torch.max(pred, dim=1)[1]
         pred = pred.to("cpu")
-        if (pred == 0 and labels == 0):
+        if (pred == 1 and labels == 1):
             tpositive += 1
-        elif (pred == 1 and labels == 1):
+        elif (pred == 0 and labels == 0):
             tnegative += 1
         elif (pred == 0 and labels == 1):
             fpositive += 1
