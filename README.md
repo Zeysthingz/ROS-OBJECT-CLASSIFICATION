@@ -60,6 +60,7 @@ After ros2bag file these step below done.
 *       git clone ....  #clone darknet_ros repo
 *      source /opt/ros/foxy/setup.bash  #Set up your environment by sourcing the following file.
 *      rosdep install -i --from-path src --rosdistro foxy -y  #Install dependencies from src 
+*      sudo apt-get install ros-foxy-vision-msgs
 *      source install/setup.bash  #This script extends the environment with the environment of other prefix paths which were sourced when this file was generated as well as all packages contained in this prefix path.
 *      colcon build #makes file as ros file
 *      ros2 bag play ros_bag_file_name.bag #plays video in rosbag file
