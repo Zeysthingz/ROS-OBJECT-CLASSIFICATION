@@ -16,10 +16,13 @@ class MinimalSubscriber(Node):
         super().__init__('minimal_subscriber')
         self.model = Classifier()
         bbox_sub = message_filters.Subscriber(self, BoundingBoxes, '/darknet_ros/bounding_boxes')
-        self.corrected_image = self.create_subscription(Image, '/image_raw/camera0_sec/uncompressed',self.listener_callback, 10)
+        self.corrected_image = self.create_subscription(Image, '/image_raw/camera0_sec/uncompressed',
+                                                        self.listener_callback, 10)
         self.published_image = self.create_publisher(Image, '/edited_image_time', 10)
         image_sub = message_filters.Subscriber(self, Image, '/edited_image_time')
-        synchronizer = message_filters.ApproximateTimeSynchronizer([image_sub, bbox_sub],10)
+
+        # Maximum queue size of 10.
+        synchronizer = message_filters.ApproximateTimeSynchronizer([image_sub, bbox_sub], queue=10, slop=0.5)
         synchronizer.registerCallback(self.callback)
         self.classfication_publisher = self.create_publisher(Classification2D, '/results', 10)
 
@@ -30,16 +33,19 @@ class MinimalSubscriber(Node):
         self.published_image.publish(image_data)
 
     def callback(self, image_data, bbox_data):
-        img = np.frombuffer(image_data.data, dtype=np.uint8).reshape(image_data.height, image_data.width, -1)
+        image = np.frombuffer(image_data.data, dtype=np.uint8).reshape(image_data.height, image_data.width, -1)
         bboxes = bbox_data.bounding_boxes
 
         for bbox in bboxes:
             if ("traffic light" == bbox.class_id):
                 x1, y1, x2, y2 = bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax
-                cropped_img = img[y1:y2, x1:x2, :].copy()
+                cropped_img = image[y1:y2, x1:x2, :]
                 name, score = self.model.prediction(cropped_img)
                 print("class_name & score : {}  {}".format(name, score))
+                ## This result does not contain any position information. It is designed for
+                #classifiers, which simply provide class probabilities given a source image.
                 published_message = Classification2D()
+                #takes name and score information
                 object_message = ObjectHypothesis()
                 object_message.id = name
                 object_message.score = score
@@ -64,4 +70,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-
