@@ -82,7 +82,7 @@ The call back functions of the subscriber nodes I created were not working becau
 For this, I fixed the time of the raw images in the classifier node and gave them to the message service.Then I produced results by inserting images into the model prediction and on a new publisher node. I published the name of classes and the scores of them.
 Here is the result after solving simultaneous synchronization problem :
 
-![Result](./published.png "Topics")
+![Result](./xxx.jpeg "RESULT")
 
 #### References
 To train models :
