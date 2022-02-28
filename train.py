@@ -14,7 +14,7 @@ from dataset_loader import CustomImageDataset
 from vgg import vgg
 
 
-def train_one_epoch(model, optimizer, loss_function,data_loader, device, epoch):
+def train_one_epoch(model, optimizer, loss_function, data_loader, device, epoch):
     model.train()
     mean_loss = torch.zeros(1).to(device)
     optimizer.zero_grad()
@@ -60,7 +60,8 @@ def evaluate(model, data_loader, device):
 
     return sum_num.item() / total_num
 
-def get_optimizer(model,train_parameters):
+
+def get_optimizer(model, train_parameters):
     name = train_parameters["optimizer"]
     lr = train_parameters["learning_rate"]
     lr_momentum = train_parameters["learning_momentum"]
@@ -72,11 +73,13 @@ def get_optimizer(model,train_parameters):
         optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9, weight_decay=1E-4)
     return optimizer
 
-def get_scheduler(optimizer,train_parameters):
+
+def get_scheduler(optimizer, train_parameters):
     step_size = train_parameters["step_size"]
     gamma = train_parameters["learning_decay_gamma"]
     scheduler = StepLR(optimizer, step_size=step_size, gamma=gamma)
     return scheduler
+
 
 def main():
     with open(r'train_config.yml') as config:
@@ -87,38 +90,36 @@ def main():
     batch_size = train_parameters["batch_size"]
 
     data_transform = transforms.Compose([transforms.RandomResizedCrop(train_parameters["resize"])])
-    train_data = CustomImageDataset("/content/gdrive/MyDrive/my_dataset/train",transform=data_transform)
-    train_loader = DataLoader(dataset = train_data, batch_size=train_parameters["batch_size"], shuffle=True )
+    train_data = CustomImageDataset("/content/gdrive/MyDrive/my_dataset/train", transform=data_transform)
+    train_loader = DataLoader(dataset=train_data, batch_size=train_parameters["batch_size"], shuffle=True)
 
-    val_data = CustomImageDataset("/content/gdrive/MyDrive/my_dataset/validation",transform=data_transform)
-    val_loader = DataLoader(dataset = val_data, batch_size = 1)
+    val_data = CustomImageDataset("/content/gdrive/MyDrive/my_dataset/validation", transform=data_transform)
+    val_loader = DataLoader(dataset=val_data, batch_size=1)
 
-  
     model = vgg(model_name="vgg16", num_classes=train_data.num_class, init_weights=True).to(device)
-    
+
     loss_function = nn.CrossEntropyLoss()
 
-    optimizer = get_optimizer(model,train_parameters)
+    optimizer = get_optimizer(model, train_parameters)
 
-    scheduler = get_scheduler(optimizer,train_parameters)
+    scheduler = get_scheduler(optimizer, train_parameters)
 
     best_acc = 0
     val_acc = []
     train_loss = []
 
-    for epoch in range(epochs):      
-        loss = train_one_epoch(model,optimizer,loss_function,train_loader,device,epoch)
+    for epoch in range(epochs):
+        loss = train_one_epoch(model, optimizer, loss_function, train_loader, device, epoch)
         train_loss.append(loss)
 
         scheduler.step()
 
         acc = evaluate(model=model,
-                        data_loader=val_loader,
-                        device=device)
+                       data_loader=val_loader,
+                       device=device)
         val_acc.append(acc)
 
-       # print("[epoch {}] accuracy: {}".format(epoch, round(acc, 3)))
-        if(acc > best_acc):
+        if (acc > best_acc):
             best_acc = acc
             torch.save(model.state_dict(), "/content/gdrive/MyDrive/LeoTask/vgg16/model-{}.pth".format(epoch))
             torch.save(model.state_dict(), "/content/gdrive/MyDrive/LeoTask/vgg16/best_model.pth".format(epoch))
@@ -134,5 +135,6 @@ def main():
     plt.savefig('vgg16.png')
     plt.show()
 
-if __name__ == "__main__":  
-    main( )
+
+if __name__ == "__main__":
+    main()

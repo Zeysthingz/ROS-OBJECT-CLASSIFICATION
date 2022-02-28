@@ -46,10 +46,10 @@ def main():
         elif (pred == 1 and labels == 0):
             fnegative += 1
 
-    precision = tp / (tp + fp)
-    recall = tp / (tp + fn)
+    precision = tpositive / (tpositive + fpositive)
+    recall = tpositive / (tpositive + fnegative)
     f1_score = 2 * ((precision * recall) / (precision + recall))
-    test_acc = (tp + tn) / total_num
+    test_acc = (tpositive + tnegative) / total_num
     print("Precision {}".format(precision))
     print("Recall {}".format(recall))
     print("f1_score {}".format(f1_score))
